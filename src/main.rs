@@ -22,7 +22,7 @@ struct Args {
 
 fn time_request(site: &str) -> Result<Duration, Box<dyn std::error::Error>> {
     let now = Instant::now();
-    let body = reqwest::blocking::get(site)?.text()?;
+    let _ = reqwest::blocking::get(site)?;
     let time = now.elapsed();
     Ok(time)
 }
@@ -31,9 +31,9 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args = Args::parse();
     let mut times = Vec::new();
 
-    for i in  1..10 {    
+    for i in  0..args.iterations {    
         let time = time_request(&args.site)?;
-        println!("Attempt {} {:?} μs", i, time.as_micros());
+        println!("Attempt {} {:?} μs", i + 1, time.as_micros());
         times.push(time.as_micros().clone() as u32);
         sleep(Duration::new(args.delay.into(), 0));    
     }
